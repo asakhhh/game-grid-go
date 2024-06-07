@@ -16,38 +16,75 @@ const (
 
 // Adi
 func main() {
-	var HEIGHT int
-	var WIDTH int
+	var HEIGHT, WIDTH int
+	fmt.Scanf("%d %d", &HEIGHT, &WIDTH)
 
-	fmt.Scanf("%d", &HEIGHT)
-	fmt.Scanf("%d", &WIDTH)
-	printCell(WIDTH)
+	full_map := make([][]int, HEIGHT)
+
+	for i := 0; i < HEIGHT; i++ {
+		full_map[i] = make([]int, WIDTH)
+		for j := 0; j < WIDTH; j++ {
+			fmt.Scanf("%d", &full_map[i][j])
+		}
+	}
+
+	for i := 0; i < HEIGHT; i++ {
+		for j := 0; j < WIDTH; j++ {
+			fmt.Print(full_map[i][j])
+			if j < WIDTH-1 {
+				fmt.Print(" ")
+			}
+		}
+		fmt.Println()
+	}
 }
 
-func printFullRow(value rune) {
-	for i := 0; i < 7; i++ {
-		if i == 0 {
-			ap.PutRune('|')
-		} else {
-			ap.PutRune(value)
+func printFullRow(value rune, isLast bool) {
+	if !isLast {
+		for i := 0; i < 7; i++ {
+			if i == 0 {
+				ap.PutRune('|')
+			} else {
+				ap.PutRune(value)
+			}
+		}
+	} else {
+		for i := 0; i < 7; i++ {
+			if i == 0 || i == 6 {
+				ap.PutRune('|')
+			} else {
+				ap.PutRune(value)
+			}
 		}
 	}
 }
 
-func printRuneAtCentre(value rune) {
-	for i := 0; i < 7; i++ {
-		if i == 0 {
-			ap.PutRune('|')
-		} else if i == 3 {
-			ap.PutRune(value)
-		} else {
-			ap.PutRune(' ')
+func printRuneAtCentre(value rune, isLast bool) {
+	if !isLast {
+		for i := 0; i < 7; i++ {
+			if i == 0 {
+				ap.PutRune('|')
+			} else if i == 3 {
+				ap.PutRune(value)
+			} else {
+				ap.PutRune(' ')
+			}
+		}
+	} else {
+		for i := 0; i < 7; i++ {
+			if i == 0 && i == 6 {
+				ap.PutRune('|')
+			} else if i == 3 {
+				ap.PutRune(value)
+			} else {
+				ap.PutRune(' ')
+			}
 		}
 	}
 }
 
 // Azat
-func printCell(value int) {
+func printCell(value int, isLast bool) {
 	ap.PutRune(' ')
 	// for i := 0; i < 7; i++ {
 	// 	ap.PutRune('_')
@@ -57,7 +94,7 @@ func printCell(value int) {
 	if value == 0 {
 		for i := 0; i < 3; i++ {
 
-			printFullRow('X')
+			printFullRow('X', isLast)
 
 			ap.PutRune('\n')
 		}
@@ -65,9 +102,9 @@ func printCell(value int) {
 		for i := 0; i < 3; i++ {
 
 			if i == 2 {
-				printFullRow('_')
+				printFullRow('_', isLast)
 			} else {
-				printFullRow(' ')
+				printFullRow(' ', isLast)
 			}
 			ap.PutRune('\n')
 		}
@@ -75,11 +112,11 @@ func printCell(value int) {
 		for i := 0; i < 3; i++ {
 
 			if i == 1 {
-				printRuneAtCentre('>')
+				printRuneAtCentre('>', isLast)
 			} else if i == 2 {
-				printFullRow('_')
+				printFullRow('_', isLast)
 			} else {
-				printFullRow(' ')
+				printFullRow(' ', isLast)
 			}
 			ap.PutRune('\n')
 		}
@@ -87,11 +124,11 @@ func printCell(value int) {
 		for i := 0; i < 3; i++ {
 
 			if i == 1 {
-				printRuneAtCentre('@')
+				printRuneAtCentre('@', isLast)
 			} else if i == 2 {
-				printFullRow('_')
+				printFullRow('_', isLast)
 			} else {
-				printFullRow(' ')
+				printFullRow(' ', isLast)
 			}
 			ap.PutRune('\n')
 		}

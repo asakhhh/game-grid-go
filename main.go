@@ -1,27 +1,38 @@
 package main
 
 import (
-	"github.com/alem-platform/ap"
 	"fmt"
+
+	"github.com/alem-platform/ap"
 )
 
-const (
-	RESET  = "\033[0m"
-	RED    = "\033[31m"
-	WHITE  = "\033[97m"
-	BLUE   = "\033[34m"
-	YELLOW = "\033[33m"
-)
 // Adi
-func main() {
-	var HEIGHT int
-	var WIDTH int
 
-	fmt.Scanf("%d", &HEIGHT)
-	fmt.Scanf("%d", &WIDTH)
+func main() {
+	var HEIGHT, WIDTH int
+	fmt.Scanf("%d %d", &HEIGHT, &WIDTH)
+
+	full_map := make([][]int, HEIGHT)
+
+	for i := 0; i < HEIGHT; i++ {
+		full_map[i] = make([]int, WIDTH)
+		for j := 0; j < WIDTH; j++ {
+			fmt.Scanf("%d", &full_map[i][j])
+		}
+	}
+
+	for i := 0; i < HEIGHT; i++ {
+		for j := 0; j < WIDTH; j++ {
+			fmt.Print(full_map[i][j])
+			if j < WIDTH-1 {
+				fmt.Print(" ")
+			}
+		}
+		fmt.Println()
+	}
 }
 
-// Azat 
+// Azat
 func printCell(value rune) {
 	for i := 0; i < 7; i++ {
 		ap.PutRune(value)

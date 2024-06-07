@@ -1,8 +1,9 @@
 package main
 
 import (
-	"github.com/alem-platform/ap"
 	"fmt"
+
+	"github.com/alem-platform/ap"
 )
 
 const (
@@ -12,6 +13,7 @@ const (
 	BLUE   = "\033[34m"
 	YELLOW = "\033[33m"
 )
+
 // Adi
 func main() {
 	var HEIGHT int
@@ -21,10 +23,11 @@ func main() {
 	fmt.Scanf("%d", &WIDTH)
 }
 
-// Azat 
+// Azat
 func printCell(value rune) {
 	for i := 0; i < 7; i++ {
 		ap.PutRune(value)
+		fmt.Print("Hello")
 	}
 }
 

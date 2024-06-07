@@ -6,15 +6,8 @@ import (
 	"github.com/alem-platform/ap"
 )
 
-const (
-	RESET  = "\033[0m"
-	RED    = "\033[31m"
-	WHITE  = "\033[97m"
-	BLUE   = "\033[34m"
-	YELLOW = "\033[33m"
-)
-
 // Adi
+
 func main() {
 	var HEIGHT, WIDTH int
 	fmt.Scanf("%d %d", &HEIGHT, &WIDTH)

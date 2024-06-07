@@ -1,12 +1,14 @@
 package main
 
-import (
-	"fmt"
+import "fmt"
 
-	"github.com/alem-platform/ap"
+const (
+	RESET  = "\033[0m"
+	RED    = "\033[31m"
+	WHITE  = "\033[97m"
+	BLUE   = "\033[34m"
+	YELLOW = "\033[33m"
 )
-
-// Adi
 
 func main() {
 	var HEIGHT, WIDTH int
@@ -21,115 +23,43 @@ func main() {
 		}
 	}
 
-	for i := 0; i < 7*WIDTH; i++ {
-		if i == 0 || i == 7*WIDTH-1 {
-			ap.PutRune(' ')
-			if i == 7*WIDTH-1 {
-				ap.PutRune('\n')
-			}
-		} else {
-			ap.PutRune('_')
-		}
-	}
-
-	for i := 0; i < HEIGHT; i++ {
-		for j := 0; j < WIDTH; j++ {
-			if j >= WIDTH-1 {
-				printCell(full_map[i][j], true)
-			} else {
-				printCell(full_map[i][j], false)
-			}
-		}
-	}
+	printMap(HEIGHT, WIDTH, full_map)
 }
 
-func printFullRow(value rune, isLast bool) {
-	if !isLast {
-		for i := 0; i < 7; i++ {
-			if i == 0 {
-				ap.PutRune('|')
-			} else {
-				ap.PutRune(value)
-			}
-		}
-	} else {
-		for i := 0; i < 7; i++ {
-			if i == 0 || i == 6 {
-				ap.PutRune('|')
-			} else {
-				ap.PutRune(value)
-			}
-		}
-	}
-}
-
-func printRuneAtCentre(value rune, isLast bool) {
-	if !isLast {
-		for i := 0; i < 7; i++ {
-			if i == 0 {
-				ap.PutRune('|')
-			} else if i == 3 {
-				ap.PutRune(value)
-			} else {
-				ap.PutRune(' ')
-			}
-		}
-	} else {
-		for i := 0; i < 7; i++ {
-			if i == 0 || i == 6 {
-				ap.PutRune('|')
-			} else if i == 3 {
-				ap.PutRune(value)
-			} else {
-				ap.PutRune(' ')
-			}
-		}
-	}
-}
-
-// Azat
-func printCell(value int, isLast bool) {
+func printCell(value int, x int, y int) {
 	if value == 0 {
-		for i := 0; i < 3; i++ {
-
-			printFullRow('X', isLast)
-
-			ap.PutRune('\n')
-		}
+		fmt.Print("X")
 	} else if value == 1 {
-		for i := 0; i < 3; i++ {
-			if i == 2 {
-				printFullRow('_', isLast)
-			} else {
-				printFullRow(' ', isLast)
-			}
-			ap.PutRune('\n')
+		if x%3 == 0 {
+			fmt.Print("_")
+		} else {
+			fmt.Print(" ")
 		}
 	} else if value == 2 {
-		for i := 0; i < 3; i++ {
-
-			if i == 1 {
-				printRuneAtCentre('>', isLast)
-			} else if i == 2 {
-				printFullRow('_', isLast)
-			} else {
-				printFullRow(' ', isLast)
-			}
-			ap.PutRune('\n')
-		}
+		fmt.Print(">")
 	} else if value == 3 {
-		for i := 0; i < 3; i++ {
-
-			if i == 1 {
-				printRuneAtCentre('@', isLast)
-			} else if i == 2 {
-				printFullRow('_', isLast)
-			} else {
-				printFullRow(' ', isLast)
-			}
-			ap.PutRune('\n')
-		}
+		fmt.Print("@")
 	}
 }
 
-// Additional tasks Yerkanat
+func printMap(height int, width int, value [][]int) {
+	// Loop to iterate over every row.
+	// Multiplied by 3 because every row has 3 rows inside.
+	// And additional 1 to print first line
+	for h := 0; h < (3*height)+1; h++ {
+		// Loop to iterate over every column
+
+		for w := 0; w < (7*width)+width+1; w++ {
+			if w == 0 && h != 0 || w%8 == 0 && h != 0 {
+				fmt.Print("|")
+			} else if h == 0 {
+				fmt.Print("_")
+			} else if h%3 != 0 {
+				printCell(value[h/3][w/8], h, w)
+			} else {
+				printCell(value[h/3-1][w/8], h, w)
+			}
+		}
+		fmt.Print("\n")
+	}
+}

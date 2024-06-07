@@ -21,14 +21,25 @@ func main() {
 		}
 	}
 
+	for i := 0; i < 7*WIDTH; i++ {
+		if i == 0 || i == 7*WIDTH-1 {
+			ap.PutRune(' ')
+			if i == 7*WIDTH-1 {
+				ap.PutRune('\n')
+			}
+		} else {
+			ap.PutRune('_')
+		}
+	}
+
 	for i := 0; i < HEIGHT; i++ {
 		for j := 0; j < WIDTH; j++ {
-			fmt.Print(full_map[i][j])
-			if j < WIDTH-1 {
-				fmt.Print(" ")
+			if j >= WIDTH-1 {
+				printCell(full_map[i][j], true)
+			} else {
+				printCell(full_map[i][j], false)
 			}
 		}
-		fmt.Println()
 	}
 }
 
@@ -65,7 +76,7 @@ func printRuneAtCentre(value rune, isLast bool) {
 		}
 	} else {
 		for i := 0; i < 7; i++ {
-			if i == 0 && i == 6 {
+			if i == 0 || i == 6 {
 				ap.PutRune('|')
 			} else if i == 3 {
 				ap.PutRune(value)
@@ -78,12 +89,6 @@ func printRuneAtCentre(value rune, isLast bool) {
 
 // Azat
 func printCell(value int, isLast bool) {
-	ap.PutRune(' ')
-	// for i := 0; i < 7; i++ {
-	// 	ap.PutRune('_')
-	// }
-	ap.PutRune('\n')
-
 	if value == 0 {
 		for i := 0; i < 3; i++ {
 
@@ -93,7 +98,6 @@ func printCell(value int, isLast bool) {
 		}
 	} else if value == 1 {
 		for i := 0; i < 3; i++ {
-
 			if i == 2 {
 				printFullRow('_', isLast)
 			} else {

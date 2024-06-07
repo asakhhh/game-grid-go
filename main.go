@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"github.com/alem-platform/ap"
+	"fmt"
+)
 
 const (
 	RESET  = "\033[0m"
@@ -19,10 +22,9 @@ func main() {
 	printMap(HEIGHT, WIDTH)
 }
 
-func printCell(value string) {
+func printCell(value rune) {
 	for i := 0; i < 7; i++ {
-		// ap.PutRune(value)
-		fmt.Println(value)
+		ap.PutRune(value)
 	}
 }
 

@@ -2,23 +2,20 @@ package main
 
 import "fmt"
 
-// ANSI color codes for console text styling
 var (
-	RESET  = "\033[0m"  // Reset text styling
-	RED    = "\033[31m" // Red text color
-	WHITE  = "\033[97m" // White text color
-	BLUE   = "\033[34m" // Blue text color
-	YELLOW = "\033[33m" // Yellow text color
+	RESET  = "\033[0m"
+	RED    = "\033[31m"
+	WHITE  = "\033[97m"
+	BLUE   = "\033[34m"
+	YELLOW = "\033[33m"
 )
 
-// Constants representing different elements on the map
 var (
-	wall   = '0' // Wall character
-	player = '2' // Player character
-	award  = '3' // Award character
+	wall   = '0'
+	player = '2'
+	award  = '3'
 )
 
-// main function reads input and calls the printMap function
 func main() {
 	var HEIGHT, WIDTH int
 	fmt.Scanf("%d %d", &HEIGHT, &WIDTH)
@@ -32,6 +29,8 @@ func main() {
 			fmt.Scanf("%d", &full_map[i][j])
 		}
 	}
+
+	fmt.Scanf("%c%c%c", &wall, &player, &award)
 
 	// Call printMap function to print the map
 	printMap(HEIGHT, WIDTH, full_map)
@@ -48,13 +47,24 @@ func printCell(value int, x int, y int) {
 			fmt.Print(" ") // Empty space
 		}
 	} else if value == 2 {
-		fmt.Print(BLUE + ">" + RESET) // Player
+		if x == 2 && y == 4 {
+			fmt.Print(BLUE + string(player) + RESET) // Player
+		} else if x == 0 {
+			fmt.Print("_") // Horizontal separator
+		} else {
+			fmt.Print(" ") // Empty space
+		}
 	} else if value == 3 {
-		fmt.Print(YELLOW + "@" + RESET) // Award
+		if x == 2 && y == 4 {
+			fmt.Print(YELLOW + string(award) + RESET) // Award
+		} else if x == 0 {
+			fmt.Print("_") // Horizontal separator
+		} else {
+			fmt.Print(" ") // Empty space
+		}
 	}
 }
 
-// printMap function prints the map along with coordinates
 func printMap(height int, width int, value [][]int) {
 	// Loop to iterate over every row.
 	// Multiplied by 3 because every row has 3 rows inside.
@@ -68,8 +78,9 @@ func printMap(height int, width int, value [][]int) {
 		}
 
 		// Loop to iterate over every column
+		// Multiplied by 8 because every column has 7 runes inside and borders
 		if h == 0 {
-			for w := 0; w < (7*width)+width+1; w++ {
+			for w := 0; w < (8*width)+1; w++ {
 				if (w+3)%7 == 0 && w != 0 {
 					fmt.Print(string(rune(64 + (w+3)/7))) // Print horizontal coordinates
 				} else {
@@ -84,13 +95,13 @@ func printMap(height int, width int, value [][]int) {
 				fmt.Print("|") // Vertical border
 			} else if h == 0 {
 				if w == 0 {
-					fmt.Print("  ") // Print space for alignment before the first row
+					fmt.Print("  ")
 				}
 				fmt.Print("_") // Horizontal border
 			} else if h%3 != 0 {
-				printCell(value[h/3][w/8], h, w) // Print cell content
+				printCell(value[h/3][w/8], h%3, w%8) // Print cell content
 			} else {
-				printCell(value[h/3-1][w/8], h, w) // Print cell content
+				printCell(value[h/3-1][w/8], h%3, w%8) // Print cell content
 			}
 		}
 		fmt.Print("\n") // Move to the next line after printing a row

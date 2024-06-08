@@ -113,20 +113,44 @@ func printCell(value, y, x int) {
 	}
 }
 
+func printNumber(num, length int) {
+	p := 1
+	curlength := 1
+	for ; p*10 <= num; p *= 10 {
+		curlength++
+	}
+
+	for i := 0; i < length-curlength; i++ {
+		ap.PutRune(' ')
+	}
+
+	for ; p > 0; p /= 10 {
+		ap.PutRune(rune('0' + (num/p)%10))
+	}
+}
+
 func printMap(height, width int, value [][]int, horiz_coord *[][7]rune) {
 	// Loop to iterate over every row.
 	// Multiplied by 3 because every row has 3 rows inside.
 	// And additional 1 to print first line
+
+	var largest_pow_10, length int
+	largest_pow_10 = 1
+	length = 1
+	for ; largest_pow_10*10 <= height; largest_pow_10 *= 10 {
+		length++
+	}
+
 	for h := 0; h < (3*height)+1; h++ {
 		// Print vertical coordinates
 		if (h+1)%3 == 0 {
 			ap.PutRune(' ')
-			ap.PutRune(rune(((h + 1) / 3) + '0'))
+			printNumber((h+1)/3, length)
 			ap.PutRune(' ')
 		} else {
-			ap.PutRune(' ')
-			ap.PutRune(' ')
-			ap.PutRune(' ')
+			for i := 0; i < length+2; i++ {
+				ap.PutRune(' ')
+			}
 		}
 
 		// Loop to iterate over every column
@@ -147,9 +171,9 @@ func printMap(height, width int, value [][]int, horiz_coord *[][7]rune) {
 				ap.PutRune('|')
 			} else if h == 0 {
 				if w == 0 {
-					ap.PutRune(' ')
-					ap.PutRune(' ')
-					ap.PutRune(' ')
+					for i := 0; i < length+2; i++ {
+						ap.PutRune(' ')
+					}
 				}
 				if w != 0 && w != 8*width {
 					ap.PutRune('_')

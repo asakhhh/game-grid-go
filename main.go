@@ -2,12 +2,18 @@ package main
 
 import "fmt"
 
-const (
+var (
 	RESET  = "\033[0m"
 	RED    = "\033[31m"
 	WHITE  = "\033[97m"
 	BLUE   = "\033[34m"
 	YELLOW = "\033[33m"
+)
+
+var (
+	wall   = '0'
+	player = '2'
+	award  = '3'
 )
 
 func main() {
@@ -28,7 +34,7 @@ func main() {
 
 func printCell(value int, x int, y int) {
 	if value == 0 {
-		fmt.Print("X")
+		fmt.Print(RED + "X" + RESET)
 	} else if value == 1 {
 		if x%3 == 0 {
 			fmt.Print("_")
@@ -36,9 +42,9 @@ func printCell(value int, x int, y int) {
 			fmt.Print(" ")
 		}
 	} else if value == 2 {
-		fmt.Print(">")
+		fmt.Print(BLUE + ">" + RESET)
 	} else if value == 3 {
-		fmt.Print("@")
+		fmt.Print(YELLOW + "@" + RESET)
 	}
 }
 
@@ -47,12 +53,32 @@ func printMap(height int, width int, value [][]int) {
 	// Multiplied by 3 because every row has 3 rows inside.
 	// And additional 1 to print first line
 	for h := 0; h < (3*height)+1; h++ {
-		// Loop to iterate over every column
+		// Print vertical coordinates
+		if (h+1)%3 == 0 && h != 0 {
+			fmt.Printf("%2d", (h+1)/3)
+		} else {
+			fmt.Print("  ")
+		}
 
-		for w := 0; w < (7*width)+width+1; w++ {
+		// Loop to iterate over every column
+		if h == 0 {
+			for w := 0; w < (7*width)+width+1; w++ {
+				if (w+3)%7 == 0 && w != 0 {
+					fmt.Print(string(rune(64 + (w+3)/7)))
+				} else {
+					fmt.Print(" ")
+				}
+			}
+			fmt.Print("\n")
+		}
+
+		for w := 0; w < (8*width)+1; w++ {
 			if w == 0 && h != 0 || w%8 == 0 && h != 0 {
 				fmt.Print("|")
 			} else if h == 0 {
+				if w == 0 {
+					fmt.Print("  ")
+				}
 				fmt.Print("_")
 			} else if h%3 != 0 {
 				printCell(value[h/3][w/8], h, w)

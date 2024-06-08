@@ -39,7 +39,7 @@ func main() {
 // printCell function prints a single cell based on its value
 func printCell(value int, x int, y int) {
 	if value == 0 {
-		fmt.Print(RED + "X" + RESET) // Wall
+		fmt.Print(RED + string(wall) + RESET) // Wall
 	} else if value == 1 {
 		if x%3 == 0 {
 			fmt.Print("_") // Horizontal separator

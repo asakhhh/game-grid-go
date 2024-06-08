@@ -217,11 +217,11 @@ func horiz_coord_count(width int, arr *[][7]rune) {
 	}
 }
 
-func readWidthAndHeight() (int, int) {
+func readWidthAndHeight() (int, int, [][7]rune) {
 	var WIDTH, HEIGHT int
 	fmt.Scanf("%d %d", &HEIGHT, &WIDTH)
 
-	return HEIGHT, WIDTH
+	return HEIGHT, WIDTH, make([][7]rune, WIDTH)
 }
 
 func readGridValues(WIDTH int, HEIGHT int) [][]int {

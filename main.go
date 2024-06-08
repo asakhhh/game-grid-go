@@ -24,6 +24,10 @@ func main() {
 	var HEIGHT, WIDTH int
 	fmt.Scanf("%d %d", &HEIGHT, &WIDTH)
 
+	for WIDTH == 0 || HEIGHT == 0 {
+		fmt.Scanf("%d %d", &HEIGHT, &WIDTH)
+	}
+
 	horiz_coord := make([][7]rune, WIDTH)
 	horiz_coord_count(WIDTH, &horiz_coord)
 

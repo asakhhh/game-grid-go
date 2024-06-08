@@ -24,6 +24,9 @@ func main() {
 	var HEIGHT, WIDTH int
 	fmt.Scanf("%d %d", &HEIGHT, &WIDTH)
 
+	horiz_coord := make([][7]rune, WIDTH)
+	horiz_coord_count(WIDTH, &horiz_coord)
+
 	full_map := make([][]int, HEIGHT)
 
 	// Read input grid values
@@ -40,7 +43,7 @@ func main() {
 	fmt.Scanf("%c%c%c", &wall, &player, &award)
 
 	// Call printMap function to print the map
-	printMap(HEIGHT, WIDTH, full_map)
+	printMap(HEIGHT, WIDTH, full_map, &horiz_coord)
 }
 
 func colorize(val int) {
@@ -64,13 +67,13 @@ func colorize(val int) {
 }
 
 // printCell function prints a single cell based on its value
-func printCell(value, x, y int) {
+func printCell(value, y, x int) {
 	if value == 0 {
 		colorize(value)
 		ap.PutRune(wall)
 		colorize(4)
 	} else if value == 1 {
-		if x%3 == 0 {
+		if y == 0 {
 			colorize(value)
 			ap.PutRune('_')
 			colorize(4)
@@ -80,13 +83,13 @@ func printCell(value, x, y int) {
 			colorize(4)
 		}
 	} else if value == 2 {
-		if x == 2 && y == 4 {
+		if y == 2 && x == 4 {
 			colorize(value)
 			ap.PutRune(player)
 			colorize(4)
-		} else if x == 0 {
+		} else if y == 0 {
 			colorize(value)
-			ap.PutRune(' ')
+			ap.PutRune('_')
 			colorize(4)
 		} else {
 			colorize(value)
@@ -94,11 +97,11 @@ func printCell(value, x, y int) {
 			colorize(4)
 		}
 	} else if value == 3 {
-		if x == 2 && y == 4 {
+		if y == 2 && x == 4 {
 			colorize(value)
 			ap.PutRune(award)
 			colorize(4)
-		} else if x == 0 {
+		} else if y == 0 {
 			colorize(value)
 			ap.PutRune('_')
 			colorize(4)
@@ -110,7 +113,7 @@ func printCell(value, x, y int) {
 	}
 }
 
-func printMap(height, width int, value [][]int) {
+func printMap(height, width int, value [][]int, horiz_coord *[][7]rune) {
 	// Loop to iterate over every row.
 	// Multiplied by 3 because every row has 3 rows inside.
 	// And additional 1 to print first line
@@ -119,7 +122,9 @@ func printMap(height, width int, value [][]int) {
 		if (h+1)%3 == 0 {
 			ap.PutRune(' ')
 			ap.PutRune(rune(((h + 1) / 3) + '0'))
+			ap.PutRune(' ')
 		} else {
+			ap.PutRune(' ')
 			ap.PutRune(' ')
 			ap.PutRune(' ')
 		}
@@ -128,8 +133,8 @@ func printMap(height, width int, value [][]int) {
 		// Multiplied by 8 because every column has 7 runes inside and borders
 		if h == 0 {
 			for w := 0; w < (8*width)+1; w++ {
-				if (w+4)%8 == 0 {
-					ap.PutRune(rune(64 + (w+4)/8)) // Print horizontal coordinates
+				if w%8 != 0 {
+					ap.PutRune((*horiz_coord)[w/8][w%8-1])
 				} else {
 					ap.PutRune(' ')
 				}
@@ -144,12 +149,75 @@ func printMap(height, width int, value [][]int) {
 				if w == 0 {
 					ap.PutRune(' ')
 					ap.PutRune(' ')
+					ap.PutRune(' ')
 				}
-				ap.PutRune('_')
+				if w != 0 && w != 8*width {
+					ap.PutRune('_')
+				} else {
+					ap.PutRune(' ')
+				}
 			} else {
 				printCell(value[(h-1)/3][w/8], h%3, w%8) // Print cell content
 			}
 		}
 		ap.PutRune('\n')
+	}
+}
+
+func add_one(arr *[][7]rune, i, j int) {
+	if (*arr)[i][j] == 'Z' {
+		(*arr)[i][j] = 'A'
+		if j > 0 {
+			add_one(arr, i, j-1)
+		}
+	} else if (*arr)[i][j] == ' ' {
+		(*arr)[i][j] = 'A'
+	} else {
+		(*arr)[i][j] = rune((*arr)[i][j] + 1)
+	}
+}
+
+func horiz_coord_count(width int, arr *[][7]rune) {
+	for i := 0; i < 6; i++ {
+		(*arr)[0][i] = ' '
+	}
+	(*arr)[0][6] = 'A'
+
+	for i := 1; i < width; i++ {
+		for j := 0; j < 7; j++ {
+			(*arr)[i][j] = (*arr)[i-1][j]
+		}
+		add_one(arr, i, 6)
+	}
+
+	for i := 0; i < width; i++ {
+		if (*arr)[i][5] == ' ' {
+			(*arr)[i][3] = (*arr)[i][6]
+			(*arr)[i][6] = ' '
+		} else if (*arr)[i][4] == ' ' {
+			(*arr)[i][3] = (*arr)[i][5]
+			(*arr)[i][4] = (*arr)[i][6]
+			(*arr)[i][5] = ' '
+			(*arr)[i][6] = ' '
+		} else if (*arr)[i][3] == ' ' {
+			(*arr)[i][2] = (*arr)[i][4]
+			(*arr)[i][3] = (*arr)[i][5]
+			(*arr)[i][4] = (*arr)[i][6]
+			(*arr)[i][5] = ' '
+			(*arr)[i][6] = ' '
+		} else if (*arr)[i][2] == ' ' {
+			(*arr)[i][2] = (*arr)[i][3]
+			(*arr)[i][3] = (*arr)[i][4]
+			(*arr)[i][4] = (*arr)[i][5]
+			(*arr)[i][5] = (*arr)[i][6]
+			(*arr)[i][6] = ' '
+		} else if (*arr)[i][1] == ' ' {
+			(*arr)[i][1] = (*arr)[i][2]
+			(*arr)[i][2] = (*arr)[i][3]
+			(*arr)[i][3] = (*arr)[i][4]
+			(*arr)[i][4] = (*arr)[i][5]
+			(*arr)[i][5] = (*arr)[i][6]
+			(*arr)[i][6] = ' '
+		}
 	}
 }

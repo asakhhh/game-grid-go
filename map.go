@@ -6,35 +6,27 @@ import (
 	"github.com/alem-platform/ap"
 )
 
+// colors of cells
 var (
-	RESET  = []rune{'\033', '[', '0', 'm'}
-	RED    = []rune{'\033', '[', '3', '1', 'm'}
-	WHITE  = []rune{'\033', '[', '9', '7', 'm'}
-	BLUE   = []rune{'\033', '[', '3', '4', 'm'}
-	YELLOW = []rune{'\033', '[', '3', '3', 'm'}
+	RESET      = []rune{'\033', '[', '0', 'm'}
+	RED        = []rune{'\033', '[', '3', '1', 'm'}
+	WHITE      = []rune{'\033', '[', '9', '7', 'm'}
+	BLUE       = []rune{'\033', '[', '3', '4', 'm'}
+	YELLOW     = []rune{'\033', '[', '3', '3', 'm'}
+	colorCodes = [][]rune{RED, WHITE, BLUE, YELLOW, RESET}
 )
 
+// Change symbols of bonus task
 var (
 	wall   = '0'
 	player = '2'
 	award  = '3'
 )
 
+// function that colorizes cells on the given input value
 func colorize(val int) {
-	if val == 0 {
-		for _, r := range RED {
-			ap.PutRune(r)
-		}
-	} else if val == 2 {
-		for _, r := range BLUE {
-			ap.PutRune(r)
-		}
-	} else if val == 3 {
-		for _, r := range YELLOW {
-			ap.PutRune(r)
-		}
-	} else if val == 4 {
-		for _, r := range RESET {
+	if val >= 0 && val < len(colorCodes) {
+		for _, r := range colorCodes[val] {
 			ap.PutRune(r)
 		}
 	}
@@ -71,26 +63,29 @@ func printCell(value, y, x int) {
 	colorize(4)
 }
 
+// function that prints number using ap.PutRune
 func printNumber(num, length int) {
-	p := 1
-	curlength := 1
+	p, curlength := 1, 1
+
 	for ; p*10 <= num; p *= 10 {
 		curlength++
 	}
 
-	for i := 0; i < length-curlength; i++ {
+	for i := 0; i <= length-curlength; i++ {
 		ap.PutRune(' ')
 	}
 
 	for ; p > 0; p /= 10 {
 		ap.PutRune(rune('0' + (num/p)%10))
 	}
+	ap.PutRune(' ')
 }
 
-func calcLenth(height int) int {
-	largest_pow_10, length := 1, 1
+// function that returns result of logroithm on base of N
+func logofN(height int, n int) int {
+	length := 1
 
-	for ; largest_pow_10*10 <= height; largest_pow_10 *= 10 {
+	for ; height > 0; height /= n {
 		length++
 	}
 
@@ -110,9 +105,9 @@ func printColumn(width int, horiz_coord *[][7]rune) {
 	ap.PutRune('\n')
 }
 
-func adaa(width int, length int, value [][]int, h int) {
+func printRow(width int, length int, value [][]int, h int) {
 	for w := 0; w < (8*width)+1; w++ {
-		if w%8 == 0 && h != 0 {
+		if w%8 == 0 && h > 0 {
 			ap.PutRune('|')
 		} else if h == 0 {
 			if w == 0 {
@@ -120,7 +115,7 @@ func adaa(width int, length int, value [][]int, h int) {
 					ap.PutRune(' ')
 				}
 			}
-			if w != 0 && w != 8*width {
+			if w > 0 && w != 8*width {
 				ap.PutRune('_')
 			} else {
 				ap.PutRune(' ')
@@ -132,33 +127,33 @@ func adaa(width int, length int, value [][]int, h int) {
 	ap.PutRune('\n')
 }
 
+// themost important function that uses all other functions to print map
 func printMap(height, width int, value [][]int, horiz_coord *[][7]rune) {
 	// Loop to iterate over every row.
 	// Multiplied by 3 because every row has 3 rows inside.
 	// And additional 1 to print first line
 
-	length := calcLenth(height)
+	length := logofN(height, 10)
 
 	for h := 0; h < (3*height)+1; h++ {
 		// Print vertical coordinates
 		if (h+1)%3 == 0 {
-			ap.PutRune(' ')
 			printNumber((h+1)/3, length)
-			ap.PutRune(' ')
 		} else {
 			for i := 0; i < length+2; i++ {
 				ap.PutRune(' ')
 			}
 		}
-
+		// print horizontal coordinates
 		if h == 0 {
 			printColumn(width, horiz_coord)
 		}
-
-		adaa(width, length, value, h)
+		// print
+		printRow(width, length, value, h)
 	}
 }
 
+// helper function to add character when "Z" on horizontal axis is reached. It starts from "AA" 'AB' ...
 func add_one(arr *[][7]rune, i, j int) {
 	if (*arr)[i][j] == 'Z' {
 		(*arr)[i][j] = 'A'
@@ -172,6 +167,7 @@ func add_one(arr *[][7]rune, i, j int) {
 	}
 }
 
+// function prints horizontal coordinates of map
 func horiz_coord_count(width int, arr *[][7]rune) {
 	for i := 0; i < 6; i++ {
 		(*arr)[0][i] = ' '
@@ -217,13 +213,20 @@ func horiz_coord_count(width int, arr *[][7]rune) {
 	}
 }
 
+// function scans widht and height of map. Retuns scanned values
 func readWidthAndHeight() (int, int, [][7]rune) {
-	var WIDTH, HEIGHT int
-	fmt.Scanf("%d %d", &HEIGHT, &WIDTH)
+	var width, height int
 
-	return HEIGHT, WIDTH, make([][7]rune, WIDTH)
+	if _, err := fmt.Scanf("%d %d", &height, &width); err != nil {
+		return -1, -1, nil
+	}
+
+	// make needed to implement Map numbers on x and y-axises.
+	return height, width, make([][7]rune, width)
 }
 
+// function scans h lines each with w number of characters
+// also it scans for Change symbols
 func readGridValues(WIDTH int, HEIGHT int) [][]int {
 	var cell rune
 	full_map := make([][]int, HEIGHT)
@@ -231,12 +234,27 @@ func readGridValues(WIDTH int, HEIGHT int) [][]int {
 	for i := 0; i < HEIGHT; i++ {
 		full_map[i] = make([]int, WIDTH)
 		for j := 0; j < WIDTH; j++ {
-			fmt.Scanf("%c", &cell)
-			full_map[i][j] = int(cell - rune('0'))
+			if _, err := fmt.Scanf("%c", &cell); err != nil {
+				return nil
+			}
+			if full_map[i][j] = int(cell - rune('0')); full_map[i][j] < 0 || full_map[i][j] > 3 {
+				return nil
+			}
+
 		}
-		fmt.Scanf("%c", &cell)
+		if _, err := fmt.Scanf("%c", &cell); err != nil {
+			return nil
+		}
 	}
-	fmt.Scanf("%c%c%c", &wall, &player, &award)
+	if _, err := fmt.Scanf("%c%c%c", &wall, &player, &award); err != nil {
+		return nil
+	}
 
 	return full_map
+}
+
+func printString(str string) {
+	for i := 0; i < len(str); i++ {
+		ap.PutRune(rune(str[i]))
+	}
 }

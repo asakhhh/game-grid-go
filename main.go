@@ -1,10 +1,19 @@
 package main
 
 func main() {
-	HEIGHT, WIDTH, horiz_coord := readWidthAndHeight()
+	height, width, horiz_coord := readWidthAndHeight()
 
-	horiz_coord_count(WIDTH, &horiz_coord)
+	if horiz_coord == nil || height <= 0 || width <= 0 {
+		printString("Wrong input for Width or Height!\n")
+	} else {
+		horiz_coord_count(width, &horiz_coord)
+		arr := readGridValues(width, height)
 
-	// Call printMap function to print the map
-	printMap(HEIGHT, WIDTH, readGridValues(WIDTH, HEIGHT), &horiz_coord)
+		if arr == nil {
+			printString("Invalid input for matrix\n")
+		} else {
+			// Call printMap function to print the map
+			printMap(height, width, arr, &horiz_coord)
+		}
+	}
 }

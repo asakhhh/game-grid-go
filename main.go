@@ -27,11 +27,14 @@ func main() {
 	full_map := make([][]int, HEIGHT)
 
 	// Read input grid values
+	var cell rune
 	for i := 0; i < HEIGHT; i++ {
 		full_map[i] = make([]int, WIDTH)
 		for j := 0; j < WIDTH; j++ {
-			fmt.Scanf("%d", &full_map[i][j])
+			fmt.Scanf("%c", &cell)
+			full_map[i][j] = int(cell - rune('0'))
 		}
+		fmt.Scanf("%c", &cell)
 	}
 
 	fmt.Scanf("%c%c%c", &wall, &player, &award)
@@ -61,7 +64,7 @@ func colorize(val int) {
 }
 
 // printCell function prints a single cell based on its value
-func printCell(value int, x int, y int) {
+func printCell(value, x, y int) {
 	if value == 0 {
 		colorize(value)
 		ap.PutRune(wall)
@@ -107,13 +110,13 @@ func printCell(value int, x int, y int) {
 	}
 }
 
-func printMap(height int, width int, value [][]int) {
+func printMap(height, width int, value [][]int) {
 	// Loop to iterate over every row.
 	// Multiplied by 3 because every row has 3 rows inside.
 	// And additional 1 to print first line
 	for h := 0; h < (3*height)+1; h++ {
 		// Print vertical coordinates
-		if (h+1)%3 == 0 && h != 0 {
+		if (h+1)%3 == 0 {
 			ap.PutRune(' ')
 			ap.PutRune(rune(((h + 1) / 3) + '0'))
 		} else {
@@ -125,8 +128,8 @@ func printMap(height int, width int, value [][]int) {
 		// Multiplied by 8 because every column has 7 runes inside and borders
 		if h == 0 {
 			for w := 0; w < (8*width)+1; w++ {
-				if (w+3)%7 == 0 && w != 0 {
-					ap.PutRune(rune(64 + (w+3)/7)) // Print horizontal coordinates
+				if (w+4)%8 == 0 {
+					ap.PutRune(rune(64 + (w+4)/8)) // Print horizontal coordinates
 				} else {
 					ap.PutRune(' ')
 				}
@@ -135,7 +138,7 @@ func printMap(height int, width int, value [][]int) {
 		}
 
 		for w := 0; w < (8*width)+1; w++ {
-			if w == 0 && h != 0 || w%8 == 0 && h != 0 {
+			if w%8 == 0 && h != 0 {
 				ap.PutRune('|')
 			} else if h == 0 {
 				if w == 0 {
@@ -143,10 +146,8 @@ func printMap(height int, width int, value [][]int) {
 					ap.PutRune(' ')
 				}
 				ap.PutRune('_')
-			} else if h%3 != 0 {
-				printCell(value[h/3][w/8], h%3, w%8) // Print cell content
 			} else {
-				printCell(value[h/3-1][w/8], h%3, w%8) // Print cell content
+				printCell(value[(h-1)/3][w/8], h%3, w%8) // Print cell content
 			}
 		}
 		ap.PutRune('\n')

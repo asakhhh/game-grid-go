@@ -167,7 +167,7 @@ func add_one(arr *[][7]rune, i, j int) {
 	}
 }
 
-// function prints horizontal coordinates of map
+// function calculates horizontal coordinates of map
 func horiz_coord_count(width int, arr *[][7]rune) {
 	for i := 0; i < 6; i++ {
 		(*arr)[0][i] = ' '
@@ -237,7 +237,7 @@ func readGridValues(WIDTH int, HEIGHT int) [][]int {
 			if _, err := fmt.Scanf("%c", &cell); err != nil {
 				return nil
 			}
-			if full_map[i][j] = int(cell - rune('0')); full_map[i][j] < 0 || full_map[i][j] > 3 {
+			if full_map[i][j] = int(cell - '0'); full_map[i][j] < 0 || full_map[i][j] > 3 {
 				return nil
 			}
 

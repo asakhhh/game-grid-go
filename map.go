@@ -18,9 +18,9 @@ var (
 
 // Change symbols of bonus task
 var (
-	wall   = '0'
-	player = '2'
-	award  = '3'
+	wall   = 'X'
+	player = '>'
+	award  = '@'
 )
 
 // function that colorizes cells on the given input value
@@ -61,35 +61,6 @@ func printCell(value, y, x int) {
 		}
 	}
 	colorize(4)
-}
-
-// function that prints number using ap.PutRune
-func printNumber(num, length int) {
-	p, curlength := 1, 1
-
-	for ; p*10 <= num; p *= 10 {
-		curlength++
-	}
-
-	for i := 0; i <= length-curlength; i++ {
-		ap.PutRune(' ')
-	}
-
-	for ; p > 0; p /= 10 {
-		ap.PutRune(rune('0' + (num/p)%10))
-	}
-	ap.PutRune(' ')
-}
-
-// function that returns result of logroithm on base of N
-func logofN(height int, n int) int {
-	length := 1
-
-	for ; height > 0; height /= n {
-		length++
-	}
-
-	return length
 }
 
 // Loop to iterate over every column
@@ -154,11 +125,11 @@ func printMap(height, width int, value [][]int, horiz_coord *[][7]rune) {
 }
 
 // helper function to add character when "Z" on horizontal axis is reached. It starts from "AA" 'AB' ...
-func add_one(arr *[][7]rune, i, j int) {
+func nextLetterAfterZ(arr *[][7]rune, i, j int) {
 	if (*arr)[i][j] == 'Z' {
 		(*arr)[i][j] = 'A'
 		if j > 0 {
-			add_one(arr, i, j-1)
+			nextLetterAfterZ(arr, i, j-1)
 		}
 	} else if (*arr)[i][j] == ' ' {
 		(*arr)[i][j] = 'A'
@@ -178,9 +149,13 @@ func horiz_coord_count(width int, arr *[][7]rune) {
 		for j := 0; j < 7; j++ {
 			(*arr)[i][j] = (*arr)[i-1][j]
 		}
-		add_one(arr, i, 6)
+		nextLetterAfterZ(arr, i, 6)
 	}
+	alignByCentre(width, arr)
+}
 
+// function that aligns number of needed spaces of horizontal notation
+func alignByCentre(width int, arr *[][7]rune) {
 	for i := 0; i < width; i++ {
 		if (*arr)[i][5] == ' ' {
 			(*arr)[i][3] = (*arr)[i][6]
@@ -250,11 +225,50 @@ func readGridValues(WIDTH int, HEIGHT int) [][]int {
 		return nil
 	}
 
+	readFormat()
 	return full_map
 }
 
-func printString(str string) {
-	for i := 0; i < len(str); i++ {
-		ap.PutRune(rune(str[i]))
+func readFormat() error {
+	var temp rune
+
+	_, err := fmt.Scanf("%c", &temp)
+	if temp == '\n' {
+		return err
+	} else {
+		wall = temp
 	}
+	_, err = fmt.Scanf("%c", &temp)
+	if temp == '\n' {
+		return err
+	} else {
+		player = temp
+	}
+	_, err = fmt.Scanf("%c", &temp)
+	if temp == '\n' {
+		return err
+	} else {
+		award = temp
+	}
+	return err
+}
+
+// function to provide clear instructions for input format.
+func greetingsMsg() {
+	printString("Hello this is program that prints a map from a given input.\n")
+	printString("Only ASCII characters are allowed to use.\n")
+	printString("\nThe map consists of the following characters:\n")
+	printString("2 - a player.\n")
+	printString("0 - a wall, where the player is not allowed to move.\n")
+	printString("1 - a free cell, where the player is allowed to step in.\n")
+	printString("3 - an award.")
+
+	printString("\n\n============================================================================\n\n")
+	printString("The input is of the following format: \n")
+	printString("h w, where h is height of map and w is width of map.\n\n")
+	printString("After that come h lines each with w number of characters.\n")
+	printString("\nFinally enter change symbols for display of cells.\n")
+	printString("in this order: \n1. Wall\n2. Player\n3. Award\n")
+
+	printString("\n\n============================================================================\n\n")
 }

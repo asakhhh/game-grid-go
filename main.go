@@ -1,6 +1,7 @@
 package main
 
 func main() {
+	greetingsMsg()
 	height, width, horiz_coord := readWidthAndHeight()
 
 	if horiz_coord == nil || height <= 0 || width <= 0 {

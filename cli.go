@@ -17,6 +17,7 @@ var (
 	colorCodes = [][]rune{RED, RESET, BLUE, YELLOW}
 )
 
+// colors for background
 var (
 	BgRed    = []rune("\033[41m")
 	BgGreen  = []rune("\033[42m")
@@ -29,7 +30,7 @@ var (
 	colorCodesBG = [][]rune{BgRed, RESET, BgBlue, BgYellow, BgPurple, BgCyan}
 )
 
-// function that colorizes chars on the given input value
+// function that colorizes Foreground
 func colorizeFG(val int) {
 	if val >= 0 && val < len(colorCodes) {
 		for _, r := range colorCodes[val] {
@@ -38,7 +39,7 @@ func colorizeFG(val int) {
 	}
 }
 
-// function that colorizes cells on the given input value
+// function that colorizes background
 func colorizeBG(val int) {
 	if val >= 0 && val < len(colorCodesBG) {
 		for _, r := range colorCodesBG[val] {
@@ -47,14 +48,15 @@ func colorizeBG(val int) {
 	}
 }
 
-// function that prints number using ap.PutRune
-func printNumber(num, length int) {
+// function that vaertical axis of map
+func printVerticalCoord(num, length int) {
 	p, curlength := 1, 1
 
 	for ; p*10 <= num; p *= 10 {
 		curlength++
 	}
 
+	// part that prints spaces so that matrix numbers arr printed correctly
 	for i := 0; i <= length-curlength; i++ {
 		ap.PutRune(' ')
 	}
@@ -72,7 +74,7 @@ func printString(str string) {
 	}
 }
 
-// function scans widht and height of map. Retuns scanned values
+// function scans width and height of map. Retuns scanned values
 func readWidthAndHeight() (int, int) {
 	var width, height int
 
@@ -109,16 +111,16 @@ func readGridValues(WIDTH int, HEIGHT int) [][]int {
 	return full_map
 }
 
+// function to read change symbols
 func readFormat() {
 	temp := make([]rune, 3)
 
 	for i := 0; i < 3; i++ {
 		if _, err := fmt.Scanf("%c", &temp[i]); temp[i] == '\n' || temp[i] < 32 || temp[i] > 126 || err != nil {
-
+			colorizeFG(0)
 			printString("\nInvalid input for change symbols\n")
-
 			printString("Default values (X>@) will be used\n\n")
-
+			colorizeFG(1)
 			return
 		}
 	}

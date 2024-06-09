@@ -4,32 +4,35 @@ import (
 	"github.com/alem-platform/ap"
 )
 
-// Change symbols of bonus task
+// Default symbols that can be changed by user
 var (
-	wall   = 'X'
-	player = '>'
-	award  = '@'
+	wall    = 'X'
+	empty   = ' '
+	player  = '>'
+	award   = '@'
+	floor   = '_'
+	symbols = []rune{wall, empty, player, award, floor}
 )
 
-// the most important function that uses all other functions to print map
+// function printing map of w*h
 func printMap(height, width int, value [][]int) {
-	// Loop to iterate over every row.
-	// Multiplied by 3 because every row has 3 rows inside.
-	// And additional 1 to print first line
 	horiz_coord := make([][7]rune, width)
 	horiz_coord_count(width, &horiz_coord)
 	length := logofN(height, 10)
 
+	// Loop to iterate over every row.
+	// Multiplied by 3 as every row has 3 rows inside.
+	// And additional 1 to print first line
+
 	for h := 0; h < (3*height)+1; h++ {
 		// Print vertical coordinates
 		if (h+1)%3 == 0 {
-			printNumber((h+1)/3, length)
+			printVerticalCoord((h+1)/3, length)
 		} else {
 			for i := 0; i < length+2; i++ {
 				ap.PutRune(' ')
 			}
 		}
-		// print horizontal coordinates
 		if h == 0 {
 			printHorizntalCoord(width, &horiz_coord)
 		}
@@ -67,28 +70,20 @@ func printCell(value, y, x int) {
 	colorizeFG(value)
 
 	if value == 0 { // print value of change symbol for wall
-		ap.PutRune(wall)
+		ap.PutRune(symbols[value])
 	} else if value == 1 { // print empty cell
 		if y == 0 {
 			ap.PutRune('_')
 		} else {
-			ap.PutRune(' ')
+			ap.PutRune(symbols[value])
 		}
-	} else if value == 2 { //  print value of change symbol for player
+	} else { //  print value of change symbol
 		if y == 2 && x == 4 {
-			ap.PutRune(player)
+			ap.PutRune(symbols[value])
 		} else if y == 0 {
 			ap.PutRune('_')
 		} else {
-			ap.PutRune(' ')
-		}
-	} else if value == 3 { // then print value of change symbol for award
-		if y == 2 && x == 4 {
-			ap.PutRune(award)
-		} else if y == 0 {
-			ap.PutRune('_')
-		} else {
-			ap.PutRune(' ')
+			ap.PutRune(symbols[1])
 		}
 	}
 	colorizeBG(1)
@@ -138,7 +133,7 @@ func horiz_coord_count(width int, arr *[][7]rune) {
 	alignByCentre(width, arr)
 }
 
-// function that aligns number of needed spaces of horizontal notation
+// function that aligns by centre horizontal notations of the map
 func alignByCentre(width int, arr *[][7]rune) {
 	for i := 0; i < width; i++ {
 		if (*arr)[i][5] == ' ' {

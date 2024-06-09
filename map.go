@@ -6,12 +6,9 @@ import (
 
 // Default symbols that can be changed by user
 var (
-	wall    = 'X'
-	empty   = ' '
-	player  = '>'
-	award   = '@'
-	floor   = '_'
-	symbols = []rune{wall, empty, player, award, floor}
+	wall   = 'X'
+	player = '>'
+	award  = '@'
 )
 
 // function printing map of w*h
@@ -34,7 +31,7 @@ func printMap(height, width int, value [][]int) {
 			}
 		}
 		if h == 0 {
-			printHorizntalCoord(width, &horiz_coord)
+			printHorizontalCoord(width, &horiz_coord)
 		}
 		// prints row of the map
 		printRow(width, length, value, h)
@@ -68,6 +65,7 @@ func printRow(width int, length int, value [][]int, h int) {
 func printCell(value, y, x int) {
 	colorizeBG(value)
 	colorizeFG(value)
+	symbols := []rune{wall, ' ', player, award}
 
 	if value == 0 { // print value of change symbol for wall
 		ap.PutRune(symbols[value])
@@ -92,7 +90,7 @@ func printCell(value, y, x int) {
 
 // Loop to iterate over every column
 // Multiplied by 8 because every column has 7 runes inside and borders
-func printHorizntalCoord(width int, horiz_coord *[][7]rune) {
+func printHorizontalCoord(width int, horiz_coord *[][7]rune) {
 	for w := 0; w < (8*width)+1; w++ {
 		if w%8 != 0 {
 			ap.PutRune((*horiz_coord)[w/8][w%8-1])
@@ -101,20 +99,6 @@ func printHorizntalCoord(width int, horiz_coord *[][7]rune) {
 		}
 	}
 	ap.PutRune('\n')
-}
-
-// helper function to add character when "Z" on horizontal axis is reached. It starts from "AA" 'AB' ...
-func nextLetterAfterZ(arr *[][7]rune, i, j int) {
-	if (*arr)[i][j] == 'Z' {
-		(*arr)[i][j] = 'A'
-		if j > 0 {
-			nextLetterAfterZ(arr, i, j-1)
-		}
-	} else if (*arr)[i][j] == ' ' {
-		(*arr)[i][j] = 'A'
-	} else {
-		(*arr)[i][j] = rune((*arr)[i][j] + 1)
-	}
 }
 
 // function calculates horizontal coordinates of map
@@ -131,6 +115,20 @@ func horiz_coord_count(width int, arr *[][7]rune) {
 		nextLetterAfterZ(arr, i, 6)
 	}
 	alignByCentre(width, arr)
+}
+
+// helper function to add character when "Z" on horizontal axis is reached. It starts from "AA" 'AB' ...
+func nextLetterAfterZ(arr *[][7]rune, i, j int) {
+	if (*arr)[i][j] == 'Z' {
+		(*arr)[i][j] = 'A'
+		if j > 0 {
+			nextLetterAfterZ(arr, i, j-1)
+		}
+	} else if (*arr)[i][j] == ' ' {
+		(*arr)[i][j] = 'A'
+	} else {
+		(*arr)[i][j] = rune((*arr)[i][j] + 1)
+	}
 }
 
 // function that aligns by centre horizontal notations of the map

@@ -1,19 +1,7 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/alem-platform/ap"
-)
-
-// colors of cells
-var (
-	RESET      = []rune{'\033', '[', '0', 'm'}
-	RED        = []rune{'\033', '[', '3', '1', 'm'}
-	WHITE      = []rune{'\033', '[', '9', '7', 'm'}
-	BLUE       = []rune{'\033', '[', '3', '4', 'm'}
-	YELLOW     = []rune{'\033', '[', '3', '3', 'm'}
-	colorCodes = [][]rune{RED, WHITE, BLUE, YELLOW, RESET}
 )
 
 // Change symbols of bonus task
@@ -99,11 +87,12 @@ func printRow(width int, length int, value [][]int, h int) {
 }
 
 // themost important function that uses all other functions to print map
-func printMap(height, width int, value [][]int, horiz_coord *[][7]rune) {
+func printMap(height, width int, value [][]int) {
 	// Loop to iterate over every row.
 	// Multiplied by 3 because every row has 3 rows inside.
 	// And additional 1 to print first line
-
+	horiz_coord := make([][7]rune, width)
+	horiz_coord_count(width, &horiz_coord)
 	length := logofN(height, 10)
 
 	for h := 0; h < (3*height)+1; h++ {
@@ -117,7 +106,7 @@ func printMap(height, width int, value [][]int, horiz_coord *[][7]rune) {
 		}
 		// print horizontal coordinates
 		if h == 0 {
-			printColumn(width, horiz_coord)
+			printColumn(width, &horiz_coord)
 		}
 		// print
 		printRow(width, length, value, h)
@@ -186,89 +175,4 @@ func alignByCentre(width int, arr *[][7]rune) {
 			(*arr)[i][6] = ' '
 		}
 	}
-}
-
-// function scans widht and height of map. Retuns scanned values
-func readWidthAndHeight() (int, int, [][7]rune) {
-	var width, height int
-
-	if _, err := fmt.Scanf("%d %d", &height, &width); err != nil {
-		return -1, -1, nil
-	}
-
-	// make needed to implement Map numbers on x and y-axises.
-	return height, width, make([][7]rune, width)
-}
-
-// function scans h lines each with w number of characters
-// also it scans for Change symbols
-func readGridValues(WIDTH int, HEIGHT int) [][]int {
-	var cell rune
-	full_map := make([][]int, HEIGHT)
-
-	for i := 0; i < HEIGHT; i++ {
-		full_map[i] = make([]int, WIDTH)
-		for j := 0; j < WIDTH; j++ {
-			if _, err := fmt.Scanf("%c", &cell); err != nil {
-				return nil
-			}
-			if full_map[i][j] = int(cell - '0'); full_map[i][j] < 0 || full_map[i][j] > 3 {
-				return nil
-			}
-
-		}
-		if _, err := fmt.Scanf("%c", &cell); err != nil {
-			return nil
-		}
-	}
-	if _, err := fmt.Scanf("%c%c%c", &wall, &player, &award); err != nil {
-		return nil
-	}
-
-	readFormat()
-	return full_map
-}
-
-func readFormat() error {
-	var temp rune
-
-	_, err := fmt.Scanf("%c", &temp)
-	if temp == '\n' {
-		return err
-	} else {
-		wall = temp
-	}
-	_, err = fmt.Scanf("%c", &temp)
-	if temp == '\n' {
-		return err
-	} else {
-		player = temp
-	}
-	_, err = fmt.Scanf("%c", &temp)
-	if temp == '\n' {
-		return err
-	} else {
-		award = temp
-	}
-	return err
-}
-
-// function to provide clear instructions for input format.
-func greetingsMsg() {
-	printString("Hello this is program that prints a map from a given input.\n")
-	printString("Only ASCII characters are allowed to use.\n")
-	printString("\nThe map consists of the following characters:\n")
-	printString("2 - a player.\n")
-	printString("0 - a wall, where the player is not allowed to move.\n")
-	printString("1 - a free cell, where the player is allowed to step in.\n")
-	printString("3 - an award.")
-
-	printString("\n\n============================================================================\n\n")
-	printString("The input is of the following format: \n")
-	printString("h w, where h is height of map and w is width of map.\n\n")
-	printString("After that come h lines each with w number of characters.\n")
-	printString("\nFinally enter change symbols for display of cells.\n")
-	printString("in this order: \n1. Wall\n2. Player\n3. Award\n")
-
-	printString("\n\n============================================================================\n\n")
 }

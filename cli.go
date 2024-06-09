@@ -6,20 +6,42 @@ import (
 	"github.com/alem-platform/ap"
 )
 
-// colors of cells
+// colors for characters
 var (
-	RESET      = []rune{'\033', '[', '0', 'm'}
-	RED        = []rune{'\033', '[', '3', '1', 'm'}
-	WHITE      = []rune{'\033', '[', '9', '7', 'm'}
-	BLUE       = []rune{'\033', '[', '3', '4', 'm'}
-	YELLOW     = []rune{'\033', '[', '3', '3', 'm'}
-	colorCodes = [][]rune{RED, WHITE, BLUE, YELLOW, RESET}
+	RESET  = []rune{'\033', '[', '0', 'm'}
+	RED    = []rune{'\033', '[', '3', '1', 'm'}
+	WHITE  = []rune{'\033', '[', '9', '7', 'm'}
+	BLUE   = []rune{'\033', '[', '3', '4', 'm'}
+	YELLOW = []rune{'\033', '[', '3', '3', 'm'}
+
+	colorCodes = [][]rune{RED, RESET, BLUE, YELLOW}
 )
 
-// function that colorizes cells on the given input value
-func colorize(val int) {
+var (
+	BgRed    = []rune("\033[41m")
+	BgGreen  = []rune("\033[42m")
+	BgYellow = []rune("\033[1;33;43m")
+	BgBlue   = []rune("\033[44m")
+	BgPurple = []rune("\033[45m")
+	BgCyan   = []rune("\033[46m")
+	BgWhite  = []rune("\033[47m")
+
+	colorCodesBG = [][]rune{BgRed, RESET, BgBlue, BgYellow, BgPurple, BgCyan}
+)
+
+// function that colorizes chars on the given input value
+func colorizeFG(val int) {
 	if val >= 0 && val < len(colorCodes) {
 		for _, r := range colorCodes[val] {
+			ap.PutRune(r)
+		}
+	}
+}
+
+// function that colorizes cells on the given input value
+func colorizeBG(val int) {
+	if val >= 0 && val < len(colorCodesBG) {
+		for _, r := range colorCodesBG[val] {
 			ap.PutRune(r)
 		}
 	}
@@ -92,11 +114,11 @@ func readFormat() {
 
 	for i := 0; i < 3; i++ {
 		if _, err := fmt.Scanf("%c", &temp[i]); temp[i] == '\n' || temp[i] < 32 || temp[i] > 126 || err != nil {
-			colorize(0)
+
 			printString("\nInvalid input for change symbols\n")
-			colorize(3)
+
 			printString("Default values (X>@) will be used\n\n")
-			colorize(1)
+
 			return
 		}
 	}
@@ -107,32 +129,31 @@ func readFormat() {
 
 // function to provide clear instructions for input format.
 func greetingsMsg() {
-	colorize(4)
 	printString("\nHello this is program that prints a map from a given input.\n")
-	colorize(0)
-	printString("Only ASCII characters are allowed to use.\n")
-	colorize(3)
-	printString("\nThe map consists of the following characters:\n")
+
+	colorizeBG(0)
+	printString("Only ASCII characters are allowed to use.")
+	colorizeBG(1)
+
+	printString("\n\nThe map consists of the following characters:\n")
+	colorizeFG(0)
 	printString("2 - a player.\n")
 	printString("0 - a wall, where the player is not allowed to move.\n")
 	printString("1 - a free cell, where the player is allowed to step in.\n")
 	printString("3 - an award.")
-
-	colorize(2)
+	colorizeFG(1)
 	printString("\n\n============================================================================\n\n")
-
-	colorize(0)
-	printString("The input is of the following format: \n")
-
-	colorize(1)
-	printString("h w, where h is height of map and w is width of map.\n\n")
+	colorizeBG(2)
+	printString("The input is of the following format: ")
+	colorizeBG(1)
+	printString("\nh w, where h is height of map and w is width of map.\n\n")
 	printString("After that come h lines each with w number of characters.\n")
 
-	colorize(3)
 	printString("\nFinally enter change symbols for display of cells.\n")
+	colorizeFG(3)
 	printString("in this order: \n1. Wall\n2. Player\n3. Award\n")
-
-	colorize(2)
+	colorizeBG(1)
 	printString("\n\n============================================================================\n\n")
-	colorize(4)
+	colorizeFG(1)
+	colorizeBG(1)
 }

@@ -63,7 +63,9 @@ func printRow(width int, length int, value [][]int, h int) {
 
 // printCell function prints a single cell of a row based on its value
 func printCell(value, y, x int) {
-	colorize(value)
+	colorizeBG(value)
+	colorizeFG(value)
+
 	if value == 0 { // print value of change symbol for wall
 		ap.PutRune(wall)
 	} else if value == 1 { // print empty cell
@@ -89,7 +91,8 @@ func printCell(value, y, x int) {
 			ap.PutRune(' ')
 		}
 	}
-	colorize(4)
+	colorizeBG(1)
+	colorizeFG(1)
 }
 
 // Loop to iterate over every column

@@ -8,7 +8,7 @@ func main() {
 	height, width := readWidthAndHeight()
 
 	if height <= 0 || width <= 0 {
-		colorize(0)
+		colorizeFG(1)
 		printString("Wrong input for Width or Height!\n")
 		return
 	}
@@ -16,7 +16,7 @@ func main() {
 	arr := readGridValues(width, height)
 
 	if arr == nil {
-		colorize(0)
+		colorizeFG(1)
 		printString("Invalid input for matrix\n")
 		return
 	}

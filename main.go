@@ -1,7 +1,10 @@
 package main
 
 func main() {
+	// function to explain format of input
 	greetingsMsg()
+
+	// reads dimension of map
 	height, width := readWidthAndHeight()
 
 	if height <= 0 || width <= 0 {
@@ -9,7 +12,7 @@ func main() {
 		printString("Wrong input for Width or Height!\n")
 		return
 	}
-
+	// reads grid values of map
 	arr := readGridValues(width, height)
 
 	if arr == nil {

@@ -16,6 +16,15 @@ var (
 	colorCodes = [][]rune{RED, WHITE, BLUE, YELLOW, RESET}
 )
 
+// function that colorizes cells on the given input value
+func colorize(val int) {
+	if val >= 0 && val < len(colorCodes) {
+		for _, r := range colorCodes[val] {
+			ap.PutRune(r)
+		}
+	}
+}
+
 // function that prints number using ap.PutRune
 func printNumber(num, length int) {
 	p, curlength := 1, 1

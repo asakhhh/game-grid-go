@@ -11,59 +11,34 @@ var (
 	award  = '@'
 )
 
-// function that colorizes cells on the given input value
-func colorize(val int) {
-	if val >= 0 && val < len(colorCodes) {
-		for _, r := range colorCodes[val] {
-			ap.PutRune(r)
+// the most important function that uses all other functions to print map
+func printMap(height, width int, value [][]int) {
+	// Loop to iterate over every row.
+	// Multiplied by 3 because every row has 3 rows inside.
+	// And additional 1 to print first line
+	horiz_coord := make([][7]rune, width)
+	horiz_coord_count(width, &horiz_coord)
+	length := logofN(height, 10)
+
+	for h := 0; h < (3*height)+1; h++ {
+		// Print vertical coordinates
+		if (h+1)%3 == 0 {
+			printNumber((h+1)/3, length)
+		} else {
+			for i := 0; i < length+2; i++ {
+				ap.PutRune(' ')
+			}
 		}
+		// print horizontal coordinates
+		if h == 0 {
+			printHorizntalCoord(width, &horiz_coord)
+		}
+		// prints row of the map
+		printRow(width, length, value, h)
 	}
 }
 
-// printCell function prints a single cell based on its value
-func printCell(value, y, x int) {
-	colorize(value)
-	if value == 0 {
-		ap.PutRune(wall)
-	} else if value == 1 {
-		if y == 0 {
-			ap.PutRune('_')
-		} else {
-			ap.PutRune(' ')
-		}
-	} else if value == 2 {
-		if y == 2 && x == 4 {
-			ap.PutRune(player)
-		} else if y == 0 {
-			ap.PutRune('_')
-		} else {
-			ap.PutRune(' ')
-		}
-	} else if value == 3 {
-		if y == 2 && x == 4 {
-			ap.PutRune(award)
-		} else if y == 0 {
-			ap.PutRune('_')
-		} else {
-			ap.PutRune(' ')
-		}
-	}
-	colorize(4)
-}
-
-// Loop to iterate over every column
-// Multiplied by 8 because every column has 7 runes inside and borders
-func printColumn(width int, horiz_coord *[][7]rune) {
-	for w := 0; w < (8*width)+1; w++ {
-		if w%8 != 0 {
-			ap.PutRune((*horiz_coord)[w/8][w%8-1])
-		} else {
-			ap.PutRune(' ')
-		}
-	}
-	ap.PutRune('\n')
-}
-
+// helper function that prints one row of a map
 func printRow(width int, length int, value [][]int, h int) {
 	for w := 0; w < (8*width)+1; w++ {
 		if w%8 == 0 && h > 0 {
@@ -86,31 +61,48 @@ func printRow(width int, length int, value [][]int, h int) {
 	ap.PutRune('\n')
 }
 
-// themost important function that uses all other functions to print map
-func printMap(height, width int, value [][]int) {
-	// Loop to iterate over every row.
-	// Multiplied by 3 because every row has 3 rows inside.
-	// And additional 1 to print first line
-	horiz_coord := make([][7]rune, width)
-	horiz_coord_count(width, &horiz_coord)
-	length := logofN(height, 10)
-
-	for h := 0; h < (3*height)+1; h++ {
-		// Print vertical coordinates
-		if (h+1)%3 == 0 {
-			printNumber((h+1)/3, length)
+// printCell function prints a single cell of a row based on its value
+func printCell(value, y, x int) {
+	colorize(value)
+	if value == 0 { // print value of change symbol for wall
+		ap.PutRune(wall)
+	} else if value == 1 { // print empty cell
+		if y == 0 {
+			ap.PutRune('_')
 		} else {
-			for i := 0; i < length+2; i++ {
-				ap.PutRune(' ')
-			}
+			ap.PutRune(' ')
 		}
-		// print horizontal coordinates
-		if h == 0 {
-			printColumn(width, &horiz_coord)
+	} else if value == 2 { //  print value of change symbol for player
+		if y == 2 && x == 4 {
+			ap.PutRune(player)
+		} else if y == 0 {
+			ap.PutRune('_')
+		} else {
+			ap.PutRune(' ')
 		}
-		// print
-		printRow(width, length, value, h)
+	} else if value == 3 { // then print value of change symbol for award
+		if y == 2 && x == 4 {
+			ap.PutRune(award)
+		} else if y == 0 {
+			ap.PutRune('_')
+		} else {
+			ap.PutRune(' ')
+		}
 	}
+	colorize(4)
+}
+
+// Loop to iterate over every column
+// Multiplied by 8 because every column has 7 runes inside and borders
+func printHorizntalCoord(width int, horiz_coord *[][7]rune) {
+	for w := 0; w < (8*width)+1; w++ {
+		if w%8 != 0 {
+			ap.PutRune((*horiz_coord)[w/8][w%8-1])
+		} else {
+			ap.PutRune(' ')
+		}
+	}
+	ap.PutRune('\n')
 }
 
 // helper function to add character when "Z" on horizontal axis is reached. It starts from "AA" 'AB' ...

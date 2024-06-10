@@ -64,7 +64,6 @@ func printRow(width int, length int, value [][]int, h int) {
 // printCell function prints a single cell of a row based on its value
 func printCell(value, y, x int) {
 	colorizeBG(value)
-	colorizeFG(value)
 	symbols := []rune{wall, ' ', player, award}
 
 	if value == 0 { // print value of change symbol for wall
@@ -85,7 +84,6 @@ func printCell(value, y, x int) {
 		}
 	}
 	colorizeBG(1)
-	colorizeFG(1)
 }
 
 // Loop to iterate over every column
